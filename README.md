@@ -1,32 +1,32 @@
 # Simple ToDo List CLI in Kotlin
 
-## Instalação Rápida
+## Quick Installation
 
-### Opção 1: Baixar o binário pré-compilado
+### Option 1: Download pre-compiled binary
 
-Você pode baixar a versão mais recente da aplicação diretamente da página de [Releases](https://github.com/marcelxsilva/todo-cli/releases):
+You can download the latest version of the application directly from the [Releases](https://github.com/marcelxsilva/todo-cli/releases) page:
 
-- Para Linux: Baixe `todo-linux.tar.gz`
-- Para macOS: Baixe `todo-macos.tar.gz`
+- For Linux: Download `todo-linux.tar.gz`
+- For macOS: Download `todo-macos.tar.gz`
 
-Após baixar, extraia o arquivo e siga estas etapas:
+After downloading, extract the file and follow these steps:
 ```bash
-# Extrair o arquivo
-tar -xzf todo-[seu-sistema].tar.gz
+# Extract the file
+tar -xzf todo-[your-system].tar.gz
 
-# Copiar todos os arquivos para um diretório no PATH
+# Copy all files to a directory in PATH
 sudo cp -r todo/* /usr/local/bin/
 
-# Reinicie o terminal e agora você pode usar o comando
+# Restart the terminal and now you can use the command
 todo --help
 ```
 
-### Opção 2: Compilar do código-fonte
+### Option 2: Build from source code
 
-Se preferir compilar do zero, consulte as instruções de compilação abaixo.
+If you prefer to build from scratch, please refer to the compilation instructions below.
 
-- JDK 17 ou superior
-- Gradle 7.0 ou superior
+- JDK 17 or higher
+- Gradle 7.0 or higher
 
 
 ### Build
@@ -35,76 +35,76 @@ Se preferir compilar do zero, consulte as instruções de compilação abaixo.
 ./gradlew clean build
 ```
 
-O arquivo JAR será gerado em `build/libs/com.todo.list-1.0-SNAPSHOT.jar`.
+The JAR file will be generated in `build/libs/com.todo.list-1.0-SNAPSHOT.jar`.
 
-### Instalação Manual
+### Manual Installation
 
-Se você compilou o código manualmente, siga estas etapas para instalá-lo:
+If you compiled the code manually, follow these steps to install it:
 
-1. Copie o JAR gerado para `/usr/local/bin`:
+1. Copy the generated JAR to `/usr/local/bin`:
 
 ```bash
 sudo cp build/libs/com.todo.list-*.jar /usr/local/bin/todo.jar
 ```
 
-2. Crie um script de execução ou use um que já existe neste repositório:
+2. Create an execution script or use one that already exists in this repository:
 
 ```bash
-### Criar o arquivo do script
+### Create the script file
 cat > todo << 'EOF' 
 #!/bin/sh
 java --enable-native-access=ALL-UNNAMED -jar /usr/local/bin/todo.jar  "$@"
 ```
 
-### Dar permissão de execução
-```
+### Give execution permission
+```bash
 chmod +x todo
 ```
 
-### Mover para o PATH
-```
+### Move to PATH
+```bash
 sudo mv todo /usr/local/bin/
 ```
 
 
-### Comandos Disponíveis
+### Available Commands
 
-- `todo add <nome>` - Adiciona uma nova tarefa
-- `todo ls [id]` - Lista todas as tarefas ou uma específica por ID
-- `todo update <id> [--name <novo_nome>] [--done|--no-done] [--deny|--no-deny]` - Atualiza uma tarefa
-- `todo rm <id>` - Remove uma tarefa
+- `todo add <name>` - Add a new task
+- `todo ls [id]` - List all tasks or a specific one by ID
+- `todo update <id> [--name <new_name>] [--done|--no-done] [--deny|--no-deny]` - Update a task
+- `todo rm <id>` - Remove a task
 
-### Exemplos de Uso
+### Usage Examples
 
 ```bash
-# Adicionar uma nova tarefa
-todo add "Beber agua"
+# Add a new task
+todo add "Drink water"
 
-# Listar todas as tarefas
+# List all tasks
 todo ls
 
-# Listar uma tarefa específica
+# List a specific task
 todo ls 1
 
-# Marcar uma tarefa como concluída
+# Mark a task as completed
 todo update 1 --done
 
-# Marcar uma tarefa como pendente
+# Mark a task as pending
 todo update 1 --deny
 
-# Atualizar o nome de uma tarefa
-todo update 1 --name "Beber mais agua"
+# Update a task name
+todo update 1 --name "Drink more water"
 
-# Remover uma tarefa
+# Remove a task
 todo rm 1
 ```
 
-## Armazenamento de dados
+## Data storage
 
-O aplicativo armazena suas tarefas em um banco de dados SQLite localizado em:
+The application stores your tasks in a SQLite database located at:
 
 ```
 ~/.todo/todo.db
 ```
 
-Onde `~` representa o diretório home do seu usuário. Este é um local padrão para armazenar dados de aplicativos em sistemas Unix-like (Linux e macOS).
+Where `~` represents the home directory of your user. This is a standard location for storing application data on Unix-like systems (Linux and macOS).
