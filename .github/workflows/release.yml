@@ -1,0 +1,87 @@
+name: Build and Release ToDo CLI
+
+on:
+  release:
+     types: [published]
+
+permissions:
+  contents: write    
+  packages: write    
+  issues: write      
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            artifact_name: todo-linux
+            asset_name: todo-linux
+          - os: macos-latest
+            artifact_name: todo-macos
+            asset_name: todo-macos
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      if: runner.os != 'Windows'
+      run: chmod +x ./gradlew
+      
+    - name: Build with Gradle
+      run: ./gradlew build
+      
+        
+    - name: Create distribution package
+      shell: bash
+      run: |
+        mkdir -p dist/todo
+        
+        cp build/libs/com.todo.list-*.jar dist/todo/todo.jar
+        cp todo dist/todo/todo
+        
+        cd dist && tar -czf ../${{ matrix.artifact_name }}.tar.gz todo
+
+    - name: Upload binaries to artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: ${{ matrix.artifact_name }}.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+      
+    - name: List and prepare downloaded artifacts
+      run: |
+        mkdir -p dist
+        find artifacts -type f -name "*.tar.gz" -ls
+        cp artifacts/todo-linux/todo-linux.tar.gz dist/ || echo "Linux artifact not found"
+        cp artifacts/todo-macos/todo-macos.tar.gz dist/ || echo "macOS artifact not found"
+        ls -la dist/
+        
+    - name: Attach binaries to release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/*.tar.gz
+        tag_name: ${{ github.event.release.tag_name }}  
+        fail_on_unmatched_files: false 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

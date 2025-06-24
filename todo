@@ -1,0 +1,2 @@
+#!/bin/bash
+java --enable-native-access=ALL-UNNAMED -jar /usr/local/bin/todo.jar  "$@"
